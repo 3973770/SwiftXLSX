@@ -769,8 +769,6 @@ public class XWorkBook{
            cell.Font = XFont(.TrebuchetMS, 10, false, true)
            cell.alignmentHorizontal = .left
    
-           sheet.buildindex()
-   
            sheet.MergeRect(XRect(2, 1, 5, 1))
            sheet.MergeRect(XRect(3, 1, 5, 1))
            sheet.MergeRect(XRect(4, 1, 5, 1))

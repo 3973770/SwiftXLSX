@@ -96,9 +96,6 @@ public class XSheet{
                 }
             }
         }
-        
-        
-        
     }
     
     /// add cell with coords to current sheet
@@ -108,6 +105,7 @@ public class XSheet{
         }else{
             let cellnew = XCell(coords)
             self.cells.append(cellnew)
+            AddCellToIndex(cellnew)
             return cellnew
         }
     }
@@ -115,6 +113,13 @@ public class XSheet{
     /// append exestit cell to current sheet
     func append(_ newElement: XCell){
         self.cells.append(newElement)
+        AddCellToIndex(newElement)
+    }
+    
+    func AddCellToIndex(_ cell:XCell){
+        if let _ = self.indexcells[cell.coords!.address] {} else{
+            self.indexcells[cell.coords!.address] = cell
+        }
     }
     
     /// build indez of all cell in sheet

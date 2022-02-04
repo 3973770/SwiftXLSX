@@ -54,6 +54,14 @@ https://github.com/ZipArchive/ZipArchive.git
 
 ![screenshot of performance test](https://raw.githubusercontent.com/3973770/SwiftXLSX/main/Sources/Sample/screen2.png) 
 
+## Contributing
+
+### Sponsorship
+
+If this library saved you any amount of time or money, please consider [sponsoring
+the work of its maintainer](https://github.com/sponsors/3973770). 
+Any amount is appreciated and helps in maintaining the project.
+
 
 ## Example for use
 
