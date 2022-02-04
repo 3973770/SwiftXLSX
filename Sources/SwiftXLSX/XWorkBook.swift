@@ -545,7 +545,7 @@ public class XWorkBook{
     }
     
     /// generate example xlsx file
-    static func test() -> Bool {
+    static public func test() -> Bool {
    
            let book = XWorkBook()
    
