@@ -921,7 +921,8 @@ extension NSColor {
         var g: CGFloat = 0
         var b: CGFloat = 0
         var a: CGFloat = 0
-        self.getRed(&r, green: &g, blue: &b, alpha: &a)
+        let rgb = self.usingColorSpace(NSColorSpace.deviceRGB)
+        rgb.getRed(&r, green: &g, blue: &b, alpha: &a)
         let ri = lroundf(Float(r) * 255)
         let gi = lroundf(Float(g) * 255)
         let bi = lroundf(Float(b) * 255)
