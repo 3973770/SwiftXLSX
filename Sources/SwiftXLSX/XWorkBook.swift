@@ -16,7 +16,11 @@
 //
 
 import Foundation
-import UIKit
+#if os(macOS)
+    import Cocoa
+#else
+    import UIKit
+#endif
 import ZipArchive
 
 
@@ -82,8 +86,12 @@ public class XWorkBook{
         idval += UInt64(cell.Font!.FontSize) * 10
         idval += (UInt64(cell.Font!.Font.ind())+1) * 10000
 
-   
+
+#if os(macOS)
+        let col:NSColor = cell.color
+#else
         let col:UIColor = cell.color
+#endif
         if let hex = col.Hex {
             if let index = self.colorsid.firstIndex(of: hex) {
                 idval += (UInt64(index)+1) * 1000000
@@ -548,10 +556,15 @@ public class XWorkBook{
     static public func test() -> Bool {
    
            let book = XWorkBook()
-   
+
+#if os(macOS)
+           let color:[NSColor] = [.darkGray, .green, .lightGray, .orange, .systemPink, .cyan, .purple, .magenta, .blue]
+           let colortext:[NSColor] = [.darkGray, .black, .white, .textColor, .textBackgroundColor]
+
+#else
            let color:[UIColor] = [.darkGray, .green, .lightGray, .orange, .systemPink, .cyan, .purple, .magenta, .blue]
            let colortext:[UIColor] = [.darkGray, .black, .white, .darkText, .lightText]
-   
+#endif
    
            func GetRandomFont() -> XFontName {
                let cases = XFontName.allCases
@@ -677,40 +690,34 @@ public class XWorkBook{
            /// line
            line += 1
            cell = sheet.AddCell(XCoords(row: line, col: 1))
-           if #available(iOS 13.0, *) {
-               cell.Cols(txt: .black, bg: .systemGray6)
-           } else {
-               cell.Cols(txt: .black, bg: .lightGray)
-           }
+#if os(macOS)
+    var bgColor = NSColor.lightGray
+#else
+    var bgColor:UIColor
+    if #available(iOS 13.0, *) {
+        bgColor = .systemGray6
+    } else {
+        bgColor = .lightGray
+    }
+#endif
+           cell.Cols(txt: .black, bg: bgColor)
            cell.Border = true
            cell.value = .text("item #2")
    
            cell = sheet.AddCell(XCoords(row: line, col: 4))
-           if #available(iOS 13.0, *) {
-               cell.Cols(txt: .black, bg: .systemGray6)
-           } else {
-               cell.Cols(txt: .black, bg: .lightGray)
-           }
+           cell.Cols(txt: .black, bg: bgColor)
            cell.Border = true
            cell.value = .double(2)
            cell.alignmentHorizontal = .right
    
            cell = sheet.AddCell(XCoords(row: line, col: 5))
-           if #available(iOS 13.0, *) {
-               cell.Cols(txt: .black, bg: .systemGray6)
-           } else {
-               cell.Cols(txt: .black, bg: .lightGray)
-           }
+           cell.Cols(txt: .black, bg: bgColor)
            cell.Border = true
            cell.value = .double(100)
            cell.alignmentHorizontal = .right
    
            cell = sheet.AddCell(XCoords(row: line, col: 6))
-           if #available(iOS 13.0, *) {
-               cell.Cols(txt: .black, bg: .systemGray6)
-           } else {
-               cell.Cols(txt: .black, bg: .lightGray)
-           }
+           cell.Cols(txt: .black, bg: bgColor)
            cell.Border = true
            cell.value = .double(200)
            cell.alignmentHorizontal = .right
@@ -834,14 +841,26 @@ extension XWorkBook: Sequence {
     }
 }
 
-fileprivate extension UIFont {
-    /// Calculate size text for current font
-    func Rectfor(_ str:String)-> CGSize {
-        let fontAttributes = [NSAttributedString.Key.font: self]
-        let size = (str as NSString).size(withAttributes: fontAttributes)
-        return size
+#if os(macOS)
+    fileprivate extension NSFont {
+        /// Calculate size text for current font
+        func Rectfor(_ str:String)-> CGSize {
+            let fontAttributes = [NSAttributedString.Key.font: self]
+            let size = (str as NSString).size(withAttributes: fontAttributes)
+            return size
+        }
     }
-}
+#else
+    fileprivate extension UIFont {
+        /// Calculate size text for current font
+        func Rectfor(_ str:String)-> CGSize {
+            let fontAttributes = [NSAttributedString.Key.font: self]
+            let size = (str as NSString).size(withAttributes: fontAttributes)
+            return size
+        }
+    }
+#endif
+
 
 fileprivate extension String{
     func XmlPrep() -> String
@@ -893,6 +912,33 @@ fileprivate extension String{
     }
 }
 
+#if os(macOS)
+extension NSColor {
+    static var hexdict:[UInt64:String] = [:]
+    /// encode color to HEX format AARRGGBB use cache for optimization
+    var Hex:String?{
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        self.getRed(&r, green: &g, blue: &b, alpha: &a)
+        let ri = lroundf(Float(r) * 255)
+        let gi = lroundf(Float(g) * 255)
+        let bi = lroundf(Float(b) * 255)
+        let ai = lroundf(Float(a) * 255)
+        
+        let idcolor = UInt64(ai)*1000000000+UInt64(ri)*1000000+UInt64(gi)*1000+UInt64(bi)
+        if let hexcol = NSColor.hexdict[idcolor] {
+            return hexcol
+        }else{
+            let hexcolgen = String(format: "%02lX%02lX%02lX%02lX",ai,ri,gi,bi)
+            NSColor.hexdict[idcolor] = hexcolgen
+            return hexcolgen
+        }
+    }
+}
+
+#else
 extension UIColor {
     static var hexdict:[UInt64:String] = [:]
     /// encode color to HEX format AARRGGBB use cache for optimization
@@ -917,3 +963,5 @@ extension UIColor {
         }
     }
 }
+#endif
+
