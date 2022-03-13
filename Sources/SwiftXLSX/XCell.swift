@@ -16,8 +16,11 @@
 //
 
 import Foundation
-import UIKit
-
+#if os(macOS)
+    import Cocoa
+#else
+    import UIKit
+#endif
 
 // Mark: struct coordinats of cell
 public class XCoords {
@@ -82,6 +85,17 @@ public struct XFont {
         self.underline = underline
     }
     
+#if os(macOS)
+    public var getfont:NSFont?
+    {
+        if let font = NSFont(name: self.Font.rawValue, size: CGFloat(self.FontSize)) {
+            return font
+        }else{
+            return NSFont(name: "Arial", size: CGFloat(self.FontSize))
+        }
+    }
+    
+#else
     public var getfont:UIFont? {
         if let font = UIFont(name: self.Font.rawValue, size: CGFloat(self.FontSize)) {
             return font
@@ -89,6 +103,7 @@ public struct XFont {
             return UIFont(name: "Arial", size: CGFloat(self.FontSize))
         }
     }
+#endif
 }
 
 public enum XValue : Equatable {
@@ -156,8 +171,13 @@ public class XCell{
     public var Font:XFont?
     public var alignmentVertical:XAligmentVertical = .center
     public var alignmentHorizontal:XAligmentHorizontal = .left
+#if os(macOS)
+    public var color : NSColor = .black
+    public var colorbackground : NSColor = .white
+#else
     public var color : UIColor = .black
     public var colorbackground : UIColor = .white
+#endif
     public var width:Int = 50
     
     public var Border:Bool = false
@@ -173,14 +193,19 @@ public class XCell{
         self.Font = XFont(.TrebuchetMS, 10)
     }
     
+#if os(macOS)
+    public func Cols(txt color:NSColor,bg bgcolor:NSColor){
+        self.color = color
+        self.colorbackground = bgcolor
+    }
+#else
     public func Cols(txt color:UIColor,bg bgcolor:UIColor){
         self.color = color
         self.colorbackground = bgcolor
     }
+#endif
     public func Als(v Vertical:XAligmentVertical,h Horizontal:XAligmentHorizontal){
         self.alignmentVertical = Vertical
         self.alignmentHorizontal = Horizontal
     }
 }
-
-
