@@ -7,6 +7,7 @@ let package = Package(
     name: "SwiftXLSX",
     platforms: [
         .iOS(.v10),
+        .macOS(.v11),
     ],
     products: [
         .library(
