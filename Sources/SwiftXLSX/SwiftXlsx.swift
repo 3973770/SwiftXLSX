@@ -15,6 +15,16 @@
 //  Created by Kostiantyn Bohonos on 1/19/22.
 //
 
+#if os(macOS)
+    import Cocoa
+    public typealias FontClass  = NSFont
+    public typealias ColorClass = NSColor
+#else
+    import UIKit
+    public typealias FontClass  = UIFont
+    public typealias ColorClass = UIColor
+#endif
+
 public struct SwiftXLSX {
     static func test() -> Bool {
         XWorkBook.test()

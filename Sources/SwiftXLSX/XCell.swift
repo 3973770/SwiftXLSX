@@ -23,7 +23,7 @@ import Foundation
 #endif
 
 // Mark: struct coordinats of cell
-public class XCoords {
+public struct XCoords {
     public var row:Int = 0
     public var col:Int = 0
     private var caddr:String?
@@ -31,8 +31,7 @@ public class XCoords {
         if let addr = self.caddr {
             return addr
         }else{
-            self.caddr = "\(self.col):\(self.row)"
-            return self.caddr!
+            return "\(self.col):\(self.row)"
         }
     }
     
@@ -40,6 +39,7 @@ public class XCoords {
     public init (row:Int,col:Int){
         self.row = row
         self.col = col
+        self.caddr = "\(self.col):\(self.row)"
     }
 }
 
@@ -85,25 +85,14 @@ public struct XFont {
         self.underline = underline
     }
     
-#if os(macOS)
-    public var getfont:NSFont?
+    public var getfont:FontClass?
     {
-        if let font = NSFont(name: self.Font.rawValue, size: CGFloat(self.FontSize)) {
+        if let font = FontClass(name: self.Font.rawValue, size: CGFloat(self.FontSize)) {
             return font
         }else{
-            return NSFont(name: "Arial", size: CGFloat(self.FontSize))
+            return FontClass(name: "Arial", size: CGFloat(self.FontSize))
         }
     }
-    
-#else
-    public var getfont:UIFont? {
-        if let font = UIFont(name: self.Font.rawValue, size: CGFloat(self.FontSize)) {
-            return font
-        }else{
-            return UIFont(name: "Arial", size: CGFloat(self.FontSize))
-        }
-    }
-#endif
 }
 
 public enum XValue : Equatable {
@@ -165,19 +154,15 @@ public enum XAligmentVertical:UInt64 {
     }
 }
 
-public class XCell{
+final public class XCell{
     public var coords:XCoords?
     public var value:XValue?
     public var Font:XFont?
     public var alignmentVertical:XAligmentVertical = .center
     public var alignmentHorizontal:XAligmentHorizontal = .left
-#if os(macOS)
-    public var color : NSColor = .black
-    public var colorbackground : NSColor = .white
-#else
-    public var color : UIColor = .black
-    public var colorbackground : UIColor = .white
-#endif
+    public var color : ColorClass = .black
+    public var colorbackground : ColorClass = .white
+
     public var width:Int = 50
     
     public var Border:Bool = false
@@ -193,17 +178,11 @@ public class XCell{
         self.Font = XFont(.TrebuchetMS, 10)
     }
     
-#if os(macOS)
-    public func Cols(txt color:NSColor,bg bgcolor:NSColor){
+    public func Cols(txt color: ColorClass,bg bgcolor: ColorClass){
         self.color = color
         self.colorbackground = bgcolor
     }
-#else
-    public func Cols(txt color:UIColor,bg bgcolor:UIColor){
-        self.color = color
-        self.colorbackground = bgcolor
-    }
-#endif
+
     public func Als(v Vertical:XAligmentVertical,h Horizontal:XAligmentHorizontal){
         self.alignmentVertical = Vertical
         self.alignmentHorizontal = Horizontal

@@ -25,7 +25,7 @@ import ZipArchive
 
 
 
-public class XWorkBook{
+final public class XWorkBook{
     private var Sheets:[XSheet] = []
     
     // for styles
@@ -77,8 +77,7 @@ public class XWorkBook{
     
     private func findFont(_ cell:XCell){
         let font = cell.Font!
-        
-        
+   
         var idval:UInt64 = cell.Font!.bold ? 1 : 0
         idval += cell.Font!.italic ? 2 : 0
         idval += cell.Font!.strike ? 3 : 0
@@ -87,11 +86,7 @@ public class XWorkBook{
         idval += (UInt64(cell.Font!.Font.ind())+1) * 10000
 
 
-#if os(macOS)
-        let col:NSColor = cell.color
-#else
-        let col:UIColor = cell.color
-#endif
+        let col:ColorClass = cell.color
         if let hex = col.Hex {
             if let index = self.colorsid.firstIndex(of: hex) {
                 idval += (UInt64(index)+1) * 1000000
@@ -557,13 +552,13 @@ public class XWorkBook{
    
            let book = XWorkBook()
 
-#if os(macOS)
-           let color:[NSColor] = [.darkGray, .green, .lightGray, .orange, .systemPink, .cyan, .purple, .magenta, .blue]
-           let colortext:[NSColor] = [.darkGray, .black, .white, .textColor, .textBackgroundColor]
 
+           let color:[ColorClass] = [.darkGray, .green, .lightGray, .orange, .systemPink, .cyan, .purple, .magenta, .blue]
+        
+#if os(macOS)
+           let colortext:[ColorClass] = [.darkGray, .black, .white, .textColor, .textBackgroundColor]
 #else
-           let color:[UIColor] = [.darkGray, .green, .lightGray, .orange, .systemPink, .cyan, .purple, .magenta, .blue]
-           let colortext:[UIColor] = [.darkGray, .black, .white, .darkText, .lightText]
+           let colortext:[ColorClass] = [.darkGray, .black, .white, .darkText, .lightText]
 #endif
    
            func GetRandomFont() -> XFontName {
@@ -690,14 +685,15 @@ public class XWorkBook{
            /// line
            line += 1
            cell = sheet.AddCell(XCoords(row: line, col: 1))
+           
+           var bgColor:ColorClass
 #if os(macOS)
-    var bgColor = NSColor.lightGray
+           bgColor = .lightGray
 #else
-    var bgColor:UIColor
     if #available(iOS 13.0, *) {
-        bgColor = .systemGray6
+          bgColor = .systemGray6
     } else {
-        bgColor = .lightGray
+          bgColor = .lightGray
     }
 #endif
            cell.Cols(txt: .black, bg: bgColor)
@@ -912,8 +908,7 @@ fileprivate extension String{
     }
 }
 
-#if os(macOS)
-extension NSColor {
+extension ColorClass {
     static var hexdict:[UInt64:String] = [:]
     /// encode color to HEX format AARRGGBB use cache for optimization
     var Hex:String?{
@@ -921,48 +916,25 @@ extension NSColor {
         var g: CGFloat = 0
         var b: CGFloat = 0
         var a: CGFloat = 0
-        let rgb = self.usingColorSpace(NSColorSpace.deviceRGB) ?? NSColor.gray
-        rgb.getRed(&r, green: &g, blue: &b, alpha: &a)
+        #if os(macOS)
+            let rgb = self.usingColorSpace(NSColorSpace.deviceRGB) ?? ColorClass.gray
+            rgb.getRed(&r, green: &g, blue: &b, alpha: &a)
+        #else
+            self.getRed(&r, green: &g, blue: &b, alpha: &a)
+        #endif
+        
         let ri = lroundf(Float(r) * 255)
         let gi = lroundf(Float(g) * 255)
         let bi = lroundf(Float(b) * 255)
         let ai = lroundf(Float(a) * 255)
         
         let idcolor = UInt64(ai)*1000000000+UInt64(ri)*1000000+UInt64(gi)*1000+UInt64(bi)
-        if let hexcol = NSColor.hexdict[idcolor] {
+        if let hexcol = ColorClass.hexdict[idcolor] {
             return hexcol
         }else{
             let hexcolgen = String(format: "%02lX%02lX%02lX%02lX",ai,ri,gi,bi)
-            NSColor.hexdict[idcolor] = hexcolgen
+            ColorClass.hexdict[idcolor] = hexcolgen
             return hexcolgen
         }
     }
 }
-
-#else
-extension UIColor {
-    static var hexdict:[UInt64:String] = [:]
-    /// encode color to HEX format AARRGGBB use cache for optimization
-    var Hex:String?{
-        var r: CGFloat = 0
-        var g: CGFloat = 0
-        var b: CGFloat = 0
-        var a: CGFloat = 0
-        self.getRed(&r, green: &g, blue: &b, alpha: &a)
-        let ri = lroundf(Float(r) * 255)
-        let gi = lroundf(Float(g) * 255)
-        let bi = lroundf(Float(b) * 255)
-        let ai = lroundf(Float(a) * 255)
-        
-        let idcolor = UInt64(ai)*1000000000+UInt64(ri)*1000000+UInt64(gi)*1000+UInt64(bi)
-        if let hexcol = UIColor.hexdict[idcolor] {
-            return hexcol
-        }else{
-            let hexcolgen = String(format: "%02lX%02lX%02lX%02lX",ai,ri,gi,bi)
-            UIColor.hexdict[idcolor] = hexcolgen
-            return hexcolgen
-        }
-    }
-}
-#endif
-
