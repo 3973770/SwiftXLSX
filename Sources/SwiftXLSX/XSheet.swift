@@ -17,7 +17,7 @@
 
 import Foundation
 
-public class XSheet{
+final public class XSheet{
     
     private static let ABC:[String] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     public var title:String = ""
@@ -44,29 +44,26 @@ public class XSheet{
     }
     
     public var GetMaxRowCol : (row:Int,col:Int) {
-        let res = XCoords()
+        var maxRC:(row: Int,col: Int) = (row:0,col:0)
         for Cell in self.cells {
-            if res.row < Cell.coords!.row {
-                res.row = Cell.coords!.row
+            guard let cellcoords = Cell.coords else {continue}
+            if maxRC.row < cellcoords.row {
+                maxRC.row = cellcoords.row
             }
-            if res.col < Cell.coords!.col {
-                res.col = Cell.coords!.col
+            if maxRC.col < cellcoords.col {
+                maxRC.col = cellcoords.col
             }
         }
-        return (res.row,res.col)
+        return maxRC
     }
     
     static func EncodeNumberABC(_ num:Int) -> String {
-        var ret = ""
-        if num < XSheet.ABC.count {
-            ret = XSheet.ABC[num]
-        }else{
-            let whole:Int = num / XSheet.ABC.count
-            let remain:Int = num - whole*XSheet.ABC.count
-            
-            ret = "\(XSheet.EncodeNumberABC(whole-1))\(XSheet.EncodeNumberABC(remain))"
-        }
-        return ret
+        guard num >= XSheet.ABC.count else { return XSheet.ABC[num]}
+ 
+        let whole:Int = num / XSheet.ABC.count
+        let remain:Int = num - whole*XSheet.ABC.count
+
+        return "\(XSheet.EncodeNumberABC(whole-1))\(XSheet.EncodeNumberABC(remain))"
     }
     
     public func MergeRect(_ rect:XRect) {
@@ -117,7 +114,7 @@ public class XSheet{
     }
     
     func AddCellToIndex(_ cell:XCell){
-        if let _ = self.indexcells[cell.coords!.address] {} else{
+        if self.indexcells[cell.coords!.address] == nil {
             self.indexcells[cell.coords!.address] = cell
         }
     }

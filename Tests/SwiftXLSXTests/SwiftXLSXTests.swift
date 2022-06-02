@@ -8,4 +8,10 @@ final class SwiftXLSXTests: XCTestCase {
         // results.
         XCTAssertEqual(SwiftXLSX.test(), true)
     }
+    
+    func testPerformance() throws {
+        self.measure {
+            _ = SwiftXLSX.test()
+        }
+    }
 }
