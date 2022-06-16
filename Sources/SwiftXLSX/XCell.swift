@@ -101,6 +101,7 @@ public enum XValue : Equatable {
     case text(String)
     case double(Double)
     case float(Float)
+    case icon(XImage)
 }
 
 

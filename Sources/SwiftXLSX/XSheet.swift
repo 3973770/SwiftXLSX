@@ -19,7 +19,7 @@ import Foundation
 
 final public class XSheet{
     
-    private static let ABC:[String] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+    private static let ABC = Array("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     public var title:String = ""
     private var cells:[XCell] = []
     var mergecells : [String] = []
@@ -58,7 +58,7 @@ final public class XSheet{
     }
     
     static func EncodeNumberABC(_ num:Int) -> String {
-        guard num >= XSheet.ABC.count else { return XSheet.ABC[num]}
+        guard num >= XSheet.ABC.count else { return "\(XSheet.ABC[num])"}
  
         let whole:Int = num / XSheet.ABC.count
         let remain:Int = num - whole*XSheet.ABC.count

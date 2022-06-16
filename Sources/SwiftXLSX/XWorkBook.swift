@@ -184,6 +184,10 @@ final public class XWorkBook{
         }
     }
     
+    private func BuildIcons(){
+        
+    }
+    
     private func BuildStyles(){
         self.clearlocaldata()
         
@@ -270,22 +274,25 @@ final public class XWorkBook{
                         /// output  values
                         if let value = cell.value {
                             switch value {
-                            case .text(_):
-                                if cell.idVal != nil {
-                                    /// this is text value and insert like id
-                                    colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" t=\"s\"><v>\(cell.idVal!)</v></c>")
-                                }else{
+                                case .text(_):
+                                    if cell.idVal != nil {
+                                        /// this is text value and insert like id
+                                        colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" t=\"s\"><v>\(cell.idVal!)</v></c>")
+                                    }else{
+                                        /// output empty cell
+                                        colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle >= 0 ? cell.idStyle : 0)\" />")
+                                    }
+                                case .double(let val):
+                                    colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" ><v>\(String(format: "%.3f", val))</v></c>")
+                                case .float(let val):
+                                    colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" ><v>\(String(format: "%.3f", val))</v></c>")
+                                case.integer(let val):
+                                    colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" ><v>\(val)</v></c>")
+                                case .long(let val):
+                                    colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" ><v>\(val)</v></c>")
+                                case .icon(_):
                                     /// output empty cell
                                     colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle >= 0 ? cell.idStyle : 0)\" />")
-                                }
-                            case .double(let val):
-                                colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" ><v>\(String(format: "%.3f", val))</v></c>")
-                            case .float(let val):
-                                colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" ><v>\(String(format: "%.3f", val))</v></c>")
-                            case.integer(let val):
-                                colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" ><v>\(val)</v></c>")
-                            case .long(let val):
-                                colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle)\" ><v>\(val)</v></c>")
                             }
                         }else{
                             colls.append("<c r=\"\(XSheet.EncodeNumberABC(col-1))\(row)\" s=\"\(cell.idStyle >= 0 ? cell.idStyle : 0)\" />")
@@ -320,12 +327,14 @@ final public class XWorkBook{
         Xml.setString("")
     }
     
-    
     private func BuildSheets() {
         for sheet in self {
             self.BuildSheet(sheet)
         }
     }
+    
+    
+   
     
     
     /// Check exist directory and create if don't exist
@@ -507,9 +516,12 @@ final public class XWorkBook{
         self.CheckCreateDirectory(path: BasePath)
         self.CheckCreateDirectory(path: "\(BasePath)/_rels")
         self.CheckCreateDirectory(path: "\(BasePath)/xl")
+        self.CheckCreateDirectory(path: "\(BasePath)/xl/media")
         self.CheckCreateDirectory(path: "\(BasePath)/xl/_rels")
         self.CheckCreateDirectory(path: "\(BasePath)/xl/worksheets")
         self.CheckCreateDirectory(path: "\(BasePath)/xl/worksheets/_rels")
+        self.CheckCreateDirectory(path: "\(BasePath)/xl/drawings")
+        self.CheckCreateDirectory(path: "\(BasePath)/xl/drawings/_rels")
         
         
         self.Write(data: self.rels, tofile: "\(BasePath)/_rels/.rels")
