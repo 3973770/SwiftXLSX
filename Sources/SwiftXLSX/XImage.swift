@@ -16,7 +16,11 @@
 //
 
 import Foundation
-import UIKit
+#if os(macOS)
+    import Cocoa
+#else
+    import UIKit
+#endif
 
 public enum XImageType:String {
     case png  = "png"
@@ -24,29 +28,98 @@ public enum XImageType:String {
     case jpg = "jpg"
 }
 
-
+#if os(macOS)
+extension NSBitmapImageRep {
+    var pngData: Data? { representation(using: .png, properties: [:]) }
+}
+extension Data {
+    var bitmap: NSBitmapImageRep? { NSBitmapImageRep(data: self) }
+}
+extension NSImage {
+    func pngData() -> Data? {
+        tiffRepresentation?.bitmap?.pngData
+    }
+}
+#endif
 
 
 public class XImage{
-    var id = ""
-    var dataicon:Data?
+    var Key = ""
+    var data:Data?
     var type:XImageType = .png
     
-    init?(with image:UIImage) {
-        guard let data = image.pngData() else {return nil}
-        dataicon = data
-        id = "\(XCS.checksum(data: dataicon!))"
+    func config(with data:Data, Key:String){
+        self.data = data
+        self.Key = Key
     }
     
-    init?(with ico:Xicons) {
-        guard let data = ico.data else {return nil}
-        dataicon = data
-        id = ico.rawValue
+    init(with data:Data, Key:String){
+        self.config(with: data, Key: Key)
+    }
+
+    
+    
+    init?(with image:ImageClass) {
+        guard let data = image.pngData() else {return nil}
+        self.config(with: data, Key: "\(XCS.checksum(data: data))")
+    }
+
+    init?(with image:ImageClass, Key:String) {
+        guard let data = image.pngData() else {return nil}
+        self.config(with: data, Key: Key)
+    }
+    
+    @discardableResult
+    func Write(toPath path:String) -> Bool{
+        var url = URL(fileURLWithPath: path)
+        url = url.appendingPathComponent(self.Key)
+        url = url.appendingPathExtension(self.type.rawValue)
+        do {
+            try self.data?.write(to: url, options: [.atomic])
+        } catch {
+            print("Error write file \(url) : \(error)")
+            return false
+        }
+        return true
     }
 }
 
-extension XImage: Equatable{
-    public static func == (lhs: XImage, rhs: XImage) -> Bool{
-        lhs.id == rhs.id
+public struct XImageCell{
+    let key:String
+    let size:CGSize
+}
+
+extension XImageCell:Equatable{
+    public static func == (lhs: Self, rhs: Self) -> Bool{
+        lhs.key == rhs.key && lhs.size.equalTo(rhs.size)
+    }
+}
+
+public class XImages{
+    public static var list:[String:XImage] = [:]
+    
+    public static func append(with ximg:XImage) -> String{
+        if list[ximg.Key] == nil {
+            list[ximg.Key] = ximg
+        }
+        return ximg.Key
+    }
+    
+    public static  func append(with image:ImageClass) -> String?{
+        guard let ximg = XImage(with: image) else {return nil}
+        return append(with: ximg)
+    }
+    
+    public static  func append(with image:ImageClass, Key:String) -> String?{
+        if list[Key] == nil {
+            guard let ximg = XImage(with: image,Key: Key) else {return nil}
+            return append(with: ximg)
+        }else{
+            return Key
+        }
+    }
+    
+    public static func removeAll(){
+        self.list.removeAll()
     }
 }
