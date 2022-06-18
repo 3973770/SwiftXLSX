@@ -12,6 +12,26 @@ SwiftXLSX is a library focused creating Excel spreadsheet (XLSX) files directly 
     XWorkBook.test()
 ``` 
 
+## NEWS
+
+- Add support inserting images into cells.
+
+```swift
+    //new kind value of XValue for icons/images 
+    XValue.icon(XImageCell)
+```
+ 
+### example of inserting image
+
+```swift
+   let cell = sheet.AddCell(XCoords(row: 1, col: 1))
+   let ImageCellValue:XImageCell = XImageCell(key: XImages.append(with: logoicon!)!, size: CGSize(width: 200, height: 75))
+   // CGSize(width: 200, height: 75) - size display image in pixel
+    cell.value = .icon(ImageCellValue)
+```
+
+- fix bug creating empty document
+
 ## Requirements
 
 **Apple Platforms**
@@ -51,6 +71,8 @@ https://github.com/ZipArchive/ZipArchive.git
 
 ## Screenshots
 ![screenshot of invoce](https://raw.githubusercontent.com/3973770/SwiftXLSX/main/Sources/Sample/screen1.png)
+
+![screenshot of icon test](https://raw.githubusercontent.com/3973770/SwiftXLSX/main/Sources/Sample/screen2.png)
 
 ![screenshot of performance test](https://raw.githubusercontent.com/3973770/SwiftXLSX/main/Sources/Sample/screen2.png) 
 
