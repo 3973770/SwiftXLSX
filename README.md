@@ -74,7 +74,7 @@ https://github.com/ZipArchive/ZipArchive.git
 
 ![screenshot of icon test](https://raw.githubusercontent.com/3973770/SwiftXLSX/main/Sources/Sample/screen2.png)
 
-![screenshot of performance test](https://raw.githubusercontent.com/3973770/SwiftXLSX/main/Sources/Sample/screen2.png) 
+![screenshot of performance test](https://raw.githubusercontent.com/3973770/SwiftXLSX/main/Sources/Sample/screen3.png) 
 
 ## Contributing
 
