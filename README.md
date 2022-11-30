@@ -62,12 +62,6 @@ If you're using SwiftXLSX in an app built with Xcode, you can also add it as a d
 dependency [using Xcode's
 GUI](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app).
 
-### Dependency
-
-**SSZipArchive**
-ZipArchive is a simple utility class for zipping and unzipping files on iOS, macOS and tvOS.
-https://github.com/ZipArchive/ZipArchive.git
-
 
 ## Screenshots
 ![screenshot of invoce](https://raw.githubusercontent.com/3973770/SwiftXLSX/main/Sources/Sample/screen1.png)
@@ -368,11 +362,3 @@ Any amount is appreciated and helps in maintaining the project.
    print("<<<File XLSX generated!>>>")
    print("\(fileid)")
 ``` 
-
-## License
-
-SSZipArchive is protected under the [MIT license](https://github.com/samsoffes/ssziparchive/raw/master/LICENSE) and our slightly modified version of [minizip-ng (formally minizip)](https://github.com/zlib-ng/minizip-ng) 3.0.2 is licensed under the [Zlib license](https://www.zlib.net/zlib_license.html).
-
-## Acknowledgments
-
-* Big thanks to [ZipArchive](https://github.com/ZipArchive).
