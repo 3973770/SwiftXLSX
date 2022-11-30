@@ -14,15 +14,15 @@ let package = Package(
             name: "SwiftXLSX",
             targets: ["SwiftXLSX"]),
     ],
-    dependencies: [
-        .package(name: "ZipArchive", url: "https://github.com/ZipArchive/ZipArchive.git", from: "2.3.0")
-    ],
+//     dependencies: [
+//         .package(name: "ZipArchive", url: "https://github.com/ZipArchive/ZipArchive.git", from: "2.3.0")
+//     ],
     targets: [
         .target(
             name: "SwiftXLSX",
-            dependencies: ["ZipArchive"]),
+//             dependencies: ["ZipArchive"]),
         .testTarget(
             name: "SwiftXLSXTests",
-            dependencies: ["SwiftXLSX"]),
+//             dependencies: ["SwiftXLSX"]),
     ]
 )
