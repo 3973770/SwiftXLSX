@@ -17,9 +17,9 @@
 
 import Foundation
 #if os(macOS)
-    import Cocoa
+import Cocoa
 #else
-    import UIKit
+import UIKit
 #endif
 
 public enum XImageType:String {
@@ -56,15 +56,15 @@ public class XImage{
     init(with data:Data, Key:String){
         self.config(with: data, Key: Key)
     }
-
     
     
-    init?(with image:ImageClass) {
+    
+    public init?(with image:ImageClass) {
         guard let data = image.pngData() else {return nil}
         self.config(with: data, Key: "\(XCS.checksum(data: data))")
     }
-
-    init?(with image:ImageClass, Key:String) {
+    
+    public init?(with image:ImageClass, Key:String) {
         guard let data = image.pngData() else {return nil}
         self.config(with: data, Key: Key)
     }
@@ -84,9 +84,14 @@ public class XImage{
     }
 }
 
-public struct XImageCell{
-    let key:String
-    let size:CGSize
+public struct XImageCell {
+    public let key: String
+    public let size: CGSize
+    
+    public init(key: String, size: CGSize) { 
+        self.key = key
+        self.size = size
+    }
 }
 
 extension XImageCell:Equatable{
